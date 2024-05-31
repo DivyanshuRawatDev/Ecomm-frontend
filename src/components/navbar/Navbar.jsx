@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FiShoppingCart } from "react-icons/fi";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Links = ["Home", "Shop", "About", "Contact"];
 
@@ -34,6 +35,7 @@ const NavLink = ({ children }) => (
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
 
   return (
     <Box bg={useColorModeValue("white", "gray.800")} px={4} shadow="md">
@@ -53,11 +55,7 @@ const Navbar = () => {
               boxSize="40px"
             />
           </Box>
-          <HStack
-            as={"nav"}
-            spacing={4}
-            display={{ base: "none", md: "flex" }}
-          >
+          <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
             {Links.map((link) => (
               <NavLink key={link}>{link}</NavLink>
             ))}
@@ -75,6 +73,9 @@ const Navbar = () => {
             colorScheme={"teal"}
             size={useBreakpointValue({ base: "sm", md: "md" })}
             mr={4}
+            onClick={() => {
+                navigate("/login")
+            }}
           >
             Sign In
           </Button>
@@ -82,6 +83,9 @@ const Navbar = () => {
             variant={"outline"}
             colorScheme={"teal"}
             size={useBreakpointValue({ base: "sm", md: "md" })}
+            onClick={()=>{
+                navigate("/signup")
+            }}
           >
             Sign Up
           </Button>

@@ -10,7 +10,7 @@ import {
   
   const SkeletonCard = () => {
     return (
-      <Card maxW="md"> {/* Changed from 'sm' to 'md' */}
+      <Card maxW="md">
         <CardBody>
           <Skeleton height="200px" borderRadius="lg" />
           <Stack mt="6" spacing="3">
