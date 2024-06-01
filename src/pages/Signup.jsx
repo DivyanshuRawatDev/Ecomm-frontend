@@ -10,7 +10,10 @@ import {
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 
+import { useDispatch } from "react-redux";
+
 const Signup = () => {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -29,12 +32,15 @@ const Signup = () => {
     e.preventDefault();
     // You can handle form submission here, e.g., send data to the server
     console.log("Form submitted with data:", formData);
+
     // Clear form fields after submission
     setFormData({
       username: "",
       email: "",
       password: "",
     });
+
+  
   };
 
   return (

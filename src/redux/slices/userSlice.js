@@ -1,0 +1,54 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { BASE_URL } from "../../utils/constants";
+
+export const fetchLogin = createAsyncThunk("login", async (credentials) => {
+  try {
+    console.log(credentials)
+    const response = await fetch(BASE_URL + "auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    //   credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to log in");
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+});
+
+
+const userSlice = createSlice({
+  name: "user",
+  initialState: {
+    user: [],
+    isLoading: false,
+    isError: false,
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchLogin.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+    });
+    builder.addCase(fetchLogin.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.user = action.payload;
+    });
+    builder.addCase(fetchLogin.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+    });
+  },
+});
+
+export default userSlice.reducer;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -9,30 +9,44 @@ import {
   Heading,
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLogin } from "../redux/slices/userSlice";
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+  const dispatch = useDispatch();
+  const userData = useSelector((store) => {
+    return store.user;
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  console.log(userData);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   console.log("Sending request to /auth/login"); // Log before sending request
+  //   try {
+  //     const response = await fetch("http://localhost:8080/auth/login", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ email, password }),
+  //     });
+  //     console.log("Response received"); // Log after receiving response
+  //     if (!response.ok) {
+  //       throw new Error("Network response was not ok");
+  //     }
+  //     const data = await response.json();
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("There was a problem with the fetch operation:", error);
+  //   }
+  // };
+
+  const handleLogin = (e) => {
     e.preventDefault();
-
-    console.log("Form submitted with data:", formData);
-
-    setFormData({
-      email: "",
-      password: "",
-    });
+    dispatch(fetchLogin({ email, password }));
   };
 
   return (
@@ -48,7 +62,7 @@ const LoginPage = () => {
       <Heading as="h2" mb={6}>
         Log In
       </Heading>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLogin}>
         <Stack spacing={4}>
           <FormControl>
             <FormLabel htmlFor="email">Email</FormLabel>
@@ -56,8 +70,10 @@ const LoginPage = () => {
               type="email"
               id="email"
               name="email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
               required
             />
           </FormControl>
@@ -67,8 +83,10 @@ const LoginPage = () => {
               type="password"
               id="password"
               name="password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               required
             />
           </FormControl>
