@@ -8,46 +8,33 @@ import {
   Stack,
   Heading,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLogin } from "../redux/slices/userSlice";
+import { getCookie } from "../utils/constants";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const userData = useSelector((store) => {
     return store.user;
   });
 
-  console.log(userData);
+  console.log(userData.status);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   console.log("Sending request to /auth/login"); // Log before sending request
-  //   try {
-  //     const response = await fetch("http://localhost:8080/auth/login", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ email, password }),
-  //     });
-  //     console.log("Response received"); // Log after receiving response
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-  //     const data = await response.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     console.error("There was a problem with the fetch operation:", error);
-  //   }
-  // };
 
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(fetchLogin({ email, password }));
   };
+
+  useEffect(() => {
+    const authToken = getCookie("uid");
+    if (authToken) {
+      navigate("/");
+    }
+  }, [navigate,userData]);
 
   return (
     <Box

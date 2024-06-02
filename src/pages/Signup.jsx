@@ -30,10 +30,6 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // You can handle form submission here, e.g., send data to the server
-    console.log("Form submitted with data:", formData);
-
-    // Clear form fields after submission
     setFormData({
       username: "",
       email: "",

@@ -1,17 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
 
 export const fetchLogin = createAsyncThunk("login", async (credentials) => {
   try {
-    console.log(credentials)
+    console.log(credentials);
     const response = await fetch(BASE_URL + "auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(credentials),
-    //   credentials: "include",
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -25,7 +24,6 @@ export const fetchLogin = createAsyncThunk("login", async (credentials) => {
     throw error;
   }
 });
-
 
 const userSlice = createSlice({
   name: "user",

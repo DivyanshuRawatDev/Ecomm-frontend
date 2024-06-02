@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -11,10 +11,15 @@ import {
   Image,
   VStack,
   useBreakpointValue,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { FiShoppingCart } from "react-icons/fi";
-import { Navigate, useNavigate } from "react-router-dom";
+import { FiShoppingCart, FiUser } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { getCookie } from "../../utils/constants";
 
 const Links = ["Home", "Shop", "About", "Contact"];
 
@@ -36,6 +41,17 @@ const NavLink = ({ children }) => (
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const buttonSize = useBreakpointValue({ base: "sm", md: "md" });
+
+  useEffect(() => {
+    const authToken = getCookie("uid");
+
+    if (authToken) {
+      setIsLoggedIn(true);
+      navigate("/");
+    }
+  }, [navigate,isLoggedIn]);
 
   return (
     <Box bg={useColorModeValue("white", "gray.800")} px={4} shadow="md">
@@ -67,28 +83,54 @@ const Navbar = () => {
             icon={<FiShoppingCart />}
             aria-label={"Cart"}
             mr={4}
-          />
-          <Button
-            variant={"solid"}
-            colorScheme={"teal"}
-            size={useBreakpointValue({ base: "sm", md: "md" })}
-            mr={4}
             onClick={() => {
-                navigate("/login")
+              // Handle cart click here
             }}
-          >
-            Sign In
-          </Button>
-          <Button
-            variant={"outline"}
-            colorScheme={"teal"}
-            size={useBreakpointValue({ base: "sm", md: "md" })}
-            onClick={()=>{
-                navigate("/signup")
-            }}
-          >
-            Sign Up
-          </Button>
+          />
+          {isLoggedIn ? (
+            <Menu>
+              <MenuButton
+                as={Button}
+                variant={"ghost"}
+                colorScheme={"teal"}
+                size={buttonSize}
+                rightIcon={<FiUser />}
+              >
+                User
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => navigate("/profile")}>
+                  Profile
+                </MenuItem>
+                <MenuItem onClick={() => navigate("/admin")}>Admin</MenuItem>
+                <MenuItem onClick={() => navigate("/logout")}>Logout</MenuItem>
+              </MenuList>
+            </Menu>
+          ) : (
+            <>
+              <Button
+                variant={"solid"}
+                colorScheme={"teal"}
+                size={buttonSize}
+                mr={4}
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Sign In
+              </Button>
+              <Button
+                variant={"outline"}
+                colorScheme={"teal"}
+                size={buttonSize}
+                onClick={() => {
+                  navigate("/signup");
+                }}
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
         </Flex>
       </Flex>
 
