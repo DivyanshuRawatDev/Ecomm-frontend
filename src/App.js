@@ -11,22 +11,24 @@ import ProtectedRoute from "./utils/ProtectedRoutes";
 function App() {
   return (
     <ChakraProvider>
-      <div className="App">
+      <div className="App flex flex-col min-h-screen">
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Products />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<Signup />} />
+        <div className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Products />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<Signup />} />
 
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute>
-                <CartPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute>
+                  <CartPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
         <Footer />
       </div>
     </ChakraProvider>

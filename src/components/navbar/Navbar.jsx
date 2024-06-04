@@ -94,7 +94,7 @@ const Navbar = () => {
             aria-label={"Cart"}
             mr={4}
             onClick={() => {
-              // Handle cart click here
+              navigate("/cart")
             }}
           />
           {isLoggedIn ? (
