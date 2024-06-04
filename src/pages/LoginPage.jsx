@@ -27,14 +27,17 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(fetchLogin({ email, password }));
+    console.log("data is fecthcing")
   };
 
   useEffect(() => {
+    console.log("running useEffect");
     if (isSuccess && getCookie("uid")) {
       navigate("/");
-      console.log(user)
+      console.log("running navigate");
+      console.log(user);
     }
-  }, [navigate,isSuccess]);
+  }, [navigate, isSuccess]);
 
   return (
     <Box

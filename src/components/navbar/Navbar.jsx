@@ -47,10 +47,13 @@ const Navbar = () => {
   const { isSuccess } = useSelector((store) => store.user);
 
   useEffect(() => {
+    console.log("Inside useEffect navbar")
     const checkLoginStatus = () => {
       const userCookie = getCookie("uid");
+      console.log("inside checkLoginStatus navbar")
       if (userCookie) {
         setIsLoggedIn(true);
+        console.log("userCookie navbar")
       } else {
         setIsLoggedIn(false);
       }
@@ -59,6 +62,7 @@ const Navbar = () => {
     checkLoginStatus();
 
     if (isSuccess) {
+      console.log("it's success navbar")
       checkLoginStatus();
     }
   }, [isSuccess]);
