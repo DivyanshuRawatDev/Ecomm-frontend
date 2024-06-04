@@ -1,5 +1,5 @@
-export const BASE_URL = "http://localhost:8080/";
-// export const BASE_URL = "https://ecomm-backend-pied.vercel.app/";
+// export const BASE_URL = "http://localhost:8080/";
+export const BASE_URL = "https://ecomm-backend-pied.vercel.app/";
 
 export const getCookie = (name) => {
   const value = `; ${document.cookie}`;
