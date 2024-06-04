@@ -31,13 +31,26 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    console.log("running useEffect");
-    if (isSuccess && getCookie("uid")) {
-      navigate("/");
-      console.log("running navigate");
-      console.log(user);
+    console.log("Inside useEffect navbar")
+    const checkLoginStatus = () => {
+      const userCookie = getCookie("uid");
+      console.log("inside checkLoginStatus navbar")
+      if (userCookie) {
+        setIsLoggedIn(true);
+        console.log("userCookie navbar")
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+
+    if (isSuccess) {
+      console.log("it's success navbar")
+      navigate("/")
+      checkLoginStatus();
     }
-  }, [navigate, isSuccess]);
+  }, [isSuccess]);
 
   return (
     <Box
