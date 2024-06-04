@@ -15,9 +15,16 @@ export const fetchLogin = createAsyncThunk("login", async (credentials) => {
 
     if (!response.ok) {
       throw new Error("Failed to log in");
+      return;
     }
 
     const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem("token", JSON.stringify(data?.token));
+    }
+
+    console.log(data);
 
     return data;
   } catch (error) {
@@ -44,7 +51,6 @@ const userSlice = createSlice({
       state.isError = false;
       state.user = action.payload;
       state.isSuccess = true;
-      
     });
     builder.addCase(fetchLogin.rejected, (state) => {
       state.isLoading = false;

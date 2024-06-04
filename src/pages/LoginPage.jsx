@@ -11,7 +11,6 @@ import {
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLogin } from "../redux/slices/userSlice";
-import { getCookie } from "../utils/constants";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -24,20 +23,26 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // const handleLogin = (e) => {
+  //   e.preventDefault();
+  //   dispatch(fetchLogin({ email, password }));
+  // };
+
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(fetchLogin({ email, password }));
+    dispatch(fetchLogin({ email, password })).then((action) => {
+      if (action.payload?.userData) {
+        navigate("/");
+      }
+    });
   };
 
   useEffect(() => {
-    console.log("running useEffect");
-    const cookie = getCookie("uid");
-    if (isSuccess && cookie) {
+    const token = JSON.parse(localStorage.getItem("token"));
+    if (token) {
       navigate("/");
-      console.log("running navigate");
-      console.log(user);
     }
-  }, [navigate, isSuccess]);
+  }, []);
 
   return (
     <Box
