@@ -27,27 +27,19 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(fetchLogin({ email, password }));
-    console.log("data is fecthcing")
+    console.log("data is fecthcing");
   };
 
   useEffect(() => {
-    console.log("Inside useEffect navbar")
+    console.log("Inside useEffect navbar");
     const checkLoginStatus = () => {
       const userCookie = getCookie("uid");
-      console.log("inside checkLoginStatus navbar")
-      if (userCookie) {
-        setIsLoggedIn(true);
-        console.log("userCookie navbar")
-      } else {
-        setIsLoggedIn(false);
-      }
+      navigate("/");
     };
 
     checkLoginStatus();
 
     if (isSuccess) {
-      console.log("it's success navbar")
-      navigate("/")
       checkLoginStatus();
     }
   }, [isSuccess]);
