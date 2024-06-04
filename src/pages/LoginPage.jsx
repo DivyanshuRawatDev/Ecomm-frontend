@@ -27,22 +27,17 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(fetchLogin({ email, password }));
-    console.log("data is fecthcing");
   };
 
   useEffect(() => {
-    console.log("Inside useEffect navbar");
-    const checkLoginStatus = () => {
-      const userCookie = getCookie("uid");
+    console.log("running useEffect");
+    const cookie = getCookie("uid");
+    if (isSuccess && cookie) {
       navigate("/");
-    };
-
-    checkLoginStatus();
-
-    if (isSuccess) {
-      checkLoginStatus();
+      console.log("running navigate");
+      console.log(user);
     }
-  }, [isSuccess]);
+  }, [navigate, isSuccess]);
 
   return (
     <Box
