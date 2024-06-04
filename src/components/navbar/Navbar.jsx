@@ -20,6 +20,7 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FiShoppingCart, FiUser } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { getCookie } from "../../utils/constants";
+import { useSelector } from "react-redux";
 
 const Links = ["Home", "Shop", "About", "Contact"];
 
@@ -43,15 +44,24 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const buttonSize = useBreakpointValue({ base: "sm", md: "md" });
+  const { isSuccess } = useSelector((store) => store.user);
 
   useEffect(() => {
-    const authToken = getCookie("uid");
+    const checkLoginStatus = () => {
+      const userCookie = getCookie("uid");
+      if (userCookie) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    };
 
-    if (authToken) {
-      setIsLoggedIn(true);
-      navigate("/");
+    checkLoginStatus();
+
+    if (isSuccess) {
+      checkLoginStatus();
     }
-  }, [navigate,isLoggedIn]);
+  }, [isSuccess]);
 
   return (
     <Box bg={useColorModeValue("white", "gray.800")} px={4} shadow="md">

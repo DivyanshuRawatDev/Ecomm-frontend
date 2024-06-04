@@ -6,6 +6,8 @@ import Navbar from "./components/navbar/Navbar";
 import LoginPage from "./pages/LoginPage";
 import Signup from "./pages/Signup";
 import Footer from "./components/footer/Footer";
+import CartPage from "./pages/CartPage";
+import ProtectedRoute from "./utils/ProtectedRoutes";
 function App() {
   return (
     <ChakraProvider>
@@ -15,6 +17,15 @@ function App() {
           <Route path="/" element={<Products />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<Signup />} />
+
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <CartPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
         <Footer />
       </div>

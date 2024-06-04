@@ -16,11 +16,11 @@ import { getCookie } from "../utils/constants";
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userData = useSelector((store) => {
-    return store.user;
-  });
 
-  console.log(userData.status);
+  const { user, isLoading, isSuccess, isError } = useSelector(
+    (store) => store.user
+  );
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -30,11 +30,11 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    const authToken = getCookie("uid");
-    if (authToken) {
+    if (isSuccess && getCookie("uid")) {
       navigate("/");
+      console.log(user)
     }
-  }, [navigate,userData]);
+  }, [navigate,isSuccess]);
 
   return (
     <Box
@@ -58,9 +58,7 @@ const LoginPage = () => {
               id="email"
               name="email"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </FormControl>
@@ -71,9 +69,7 @@ const LoginPage = () => {
               id="password"
               name="password"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </FormControl>

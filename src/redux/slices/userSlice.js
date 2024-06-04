@@ -31,20 +31,25 @@ const userSlice = createSlice({
     user: [],
     isLoading: false,
     isError: false,
+    isSuccess: false,
   },
   extraReducers: (builder) => {
     builder.addCase(fetchLogin.pending, (state) => {
       state.isLoading = true;
       state.isError = false;
+      state.isSuccess = false;
     });
     builder.addCase(fetchLogin.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isError = false;
       state.user = action.payload;
+      state.isSuccess = true;
+      
     });
     builder.addCase(fetchLogin.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
+      state.isSuccess = false;
     });
   },
 });
