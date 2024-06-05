@@ -45,6 +45,12 @@ const Navbar = () => {
   const buttonSize = useBreakpointValue({ base: "sm", md: "md" });
   const { isSuccess } = useSelector((store) => store.user);
 
+  useEffect(() => {
+    const token = JSON.parse(localStorage.getItem("token")) || "";
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, [isSuccess]);
 
   return (
     <Box bg={useColorModeValue("white", "gray.800")} px={4} shadow="md">
@@ -77,7 +83,7 @@ const Navbar = () => {
             aria-label={"Cart"}
             mr={4}
             onClick={() => {
-              navigate("/cart")
+              navigate("/cart");
             }}
           />
           {isLoggedIn ? (

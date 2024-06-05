@@ -11,6 +11,7 @@ import {
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLogin } from "../redux/slices/userSlice";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -33,12 +34,13 @@ const LoginPage = () => {
     dispatch(fetchLogin({ email, password })).then((action) => {
       if (action.payload?.userData) {
         navigate("/");
+        toast.success(user.message)
       }
     });
   };
 
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("token"));
+    const token = JSON.parse(localStorage.getItem("token")) || "";
     if (token) {
       navigate("/");
     }

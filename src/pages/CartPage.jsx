@@ -9,8 +9,10 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useDispatch } from "react-redux";
 
 const CartPage = () => {
+  const dispatch = useDispatch();
   const cartItems = [
     {
       id: 1,
@@ -79,7 +81,9 @@ const CartPage = () => {
               <Input
                 type="number"
                 value={item.quantity}
-                onChange={()=>{console.log("lo")}}
+                onChange={() => {
+                  console.log("lo");
+                }}
                 width="60px"
                 mr={2}
                 textAlign="center"

@@ -11,8 +11,25 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { addProductToCart } from "../../redux/slices/cartSlice";
+import { toast } from "react-toastify";
 
 const Cards = ({ data }) => {
+  const dispatch = useDispatch();
+
+  const handleAddToCart = () => {
+    dispatch(addProductToCart({ productId: data._id, quantity: 1 })).then(
+      (action) => {
+        if (action?.payload?.data?.message === "Product Already Added") {
+          toast.warning(action?.payload?.data?.message);
+        } else {
+          toast.success(action?.payload?.data?.message);
+        }
+      }
+    );
+  };
+
   return (
     <div>
       <Card maxW="sm">
@@ -43,7 +60,11 @@ const Cards = ({ data }) => {
             <Button variant="solid" colorScheme="blue">
               Buy now
             </Button>
-            <Button variant="ghost" colorScheme="blue">
+            <Button
+              variant="ghost"
+              colorScheme="blue"
+              onClick={handleAddToCart}
+            >
               Add to cart
             </Button>
           </ButtonGroup>
