@@ -29,6 +29,22 @@ export const addProductToCart = createAsyncThunk(
   }
 );
 
+export const fetchCartProduct = createAsyncThunk("cart/get", async () => {
+  const token = JSON.parse(localStorage.getItem("token")) || "";
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(BASE_URL + "cart/get", config);
+    return response?.data?.cart.products;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -43,10 +59,22 @@ const cartSlice = createSlice({
     });
     builder.addCase(addProductToCart.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.cart = action.payload;
       state.isError = false;
     });
     builder.addCase(addProductToCart.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+    });
+    builder.addCase(fetchCartProduct.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+    });
+    builder.addCase(fetchCartProduct.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.cart = action.payload;
+      state.isError = false;
+    });
+    builder.addCase(fetchCartProduct.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
     });
@@ -54,4 +82,3 @@ const cartSlice = createSlice({
 });
 
 export default cartSlice.reducer;
-// export {}=cartSlice.actions;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -9,10 +9,17 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCartProduct } from "../redux/slices/cartSlice";
 
 const CartPage = () => {
   const dispatch = useDispatch();
+  const { cart } = useSelector((store) => store?.cart);
+
+  useEffect(() => {
+    dispatch(fetchCartProduct());
+  }, [dispatch]);
+  console.log(cart);
   const cartItems = [
     {
       id: 1,
@@ -31,9 +38,11 @@ const CartPage = () => {
   ];
 
   const calculateTotal = () => {
-    return cartItems
-      .reduce((total, item) => total + item.price * item.quantity, 0)
-      .toFixed(2);
+    return (
+      cart
+        ?.reduce((acc, curr) => acc + curr?.productId?.price * curr.quantity, 0)
+        .toFixed(2) || 0
+    );
   };
 
   return (
@@ -42,7 +51,7 @@ const CartPage = () => {
         Shopping Cart
       </Heading>
       <VStack spacing={4} align="stretch">
-        {cartItems.map((item) => (
+        {cart?.map((item) => (
           <Flex
             key={item.id}
             direction={{ base: "column", md: "row" }}
@@ -54,7 +63,7 @@ const CartPage = () => {
             boxShadow="md"
           >
             <Image
-              src={item.imageUrl}
+              src={item?.productId?.imageUrl}
               alt={item.name}
               boxSize={{ base: "100%", md: "150px" }}
               objectFit="cover"
@@ -67,10 +76,13 @@ const CartPage = () => {
               textAlign={{ base: "center", md: "left" }}
             >
               <Text fontWeight="bold" fontSize="xl">
-                {item.name}
+                {item.productId.title}
               </Text>
               <Text mt={2} fontSize="lg">
-                ${item.price.toFixed(2)}
+                {item?.productId?.description}
+              </Text>
+              <Text mt={2} fontSize="lg">
+                Rs.{item?.productId?.price.toFixed(2)}
               </Text>
             </Box>
             <Flex
@@ -95,7 +107,7 @@ const CartPage = () => {
       </VStack>
       <Box mt={8} textAlign="center">
         <Text fontSize="2xl" fontWeight="bold">
-          Total: ${calculateTotal()}
+          Total: Rs.{calculateTotal()}
         </Text>
         <Button colorScheme="teal" size="lg" mt={4}>
           Proceed to Checkout
