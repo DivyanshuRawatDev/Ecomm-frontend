@@ -3,7 +3,6 @@ import {
   Box,
   Flex,
   HStack,
-  Link,
   IconButton,
   Button,
   useDisclosure,
@@ -18,15 +17,17 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FiShoppingCart, FiUser } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { NavLink as RouterNavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLogout } from "../../redux/slices/userSlice";
 import { toast } from "react-toastify";
 
-const Links = ["Home", "Shop", "About", "Contact"];
+const Links = ["Home", "About", "Contact"];
 
-const NavLink = ({ children }) => (
-  <Link
+const NavLink = ({ to, children }) => (
+  <Button
+    as={RouterNavLink}
+    to={to}
     px={2}
     py={1}
     rounded={"md"}
@@ -34,10 +35,10 @@ const NavLink = ({ children }) => (
       textDecoration: "none",
       bg: useColorModeValue("gray.200", "gray.700"),
     }}
-    href={"#"}
+    variant="link"
   >
     {children}
-  </Link>
+  </Button>
 );
 
 const Navbar = () => {
@@ -82,8 +83,13 @@ const Navbar = () => {
             />
           </Box>
           <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-            {Links.map((link) => (
-              <NavLink key={link}>{link}</NavLink>
+            {Links.map((link, index) => (
+              <NavLink
+                key={index}
+                to={link === "Home" ? "/" : `/${link.toLowerCase()}`}
+              >
+                {link}
+              </NavLink>
             ))}
           </HStack>
         </HStack>
@@ -147,8 +153,13 @@ const Navbar = () => {
       {isOpen ? (
         <Box pb={4} display={{ md: "none" }}>
           <VStack as={"nav"} spacing={4}>
-            {Links.map((link) => (
-              <NavLink key={link}>{link}</NavLink>
+            {Links.map((link, index) => (
+              <NavLink
+                key={index}
+                to={link === "Home" ? "/" : `/${link.toLowerCase()}`}
+              >
+                {link}
+              </NavLink>
             ))}
           </VStack>
         </Box>

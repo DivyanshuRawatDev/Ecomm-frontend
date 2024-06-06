@@ -10,32 +10,16 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCartProduct } from "../redux/slices/cartSlice";
+import { fetchCartProduct, deleteCartProduct } from "../redux/slices/cartSlice";
 
 const CartPage = () => {
   const dispatch = useDispatch();
   const { cart } = useSelector((store) => store?.cart);
+  console.log(cart)
 
   useEffect(() => {
     dispatch(fetchCartProduct());
   }, [dispatch]);
-  console.log(cart);
-  const cartItems = [
-    {
-      id: 1,
-      name: "Product 1",
-      price: 29.99,
-      imageUrl: "https://via.placeholder.com/150",
-      quantity: 2,
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      price: 49.99,
-      imageUrl: "https://via.placeholder.com/150",
-      quantity: 1,
-    },
-  ];
 
   const calculateTotal = () => {
     return (
@@ -43,6 +27,10 @@ const CartPage = () => {
         ?.reduce((acc, curr) => acc + curr?.productId?.price * curr.quantity, 0)
         .toFixed(2) || 0
     );
+  };
+
+  const handleDeleteCartProduct = (productId) => {
+    dispatch(deleteCartProduct(productId));
   };
 
   return (
@@ -100,7 +88,14 @@ const CartPage = () => {
                 mr={2}
                 textAlign="center"
               />
-              <Button colorScheme="red">Remove</Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  handleDeleteCartProduct(item?.productId?._id);
+                }}
+              >
+                Remove
+              </Button>
             </Flex>
           </Flex>
         ))}
