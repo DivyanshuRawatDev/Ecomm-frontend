@@ -49,6 +49,24 @@ export const fetchSignup = createAsyncThunk(
   }
 );
 
+export const fetchLogout = createAsyncThunk("auth/logout", async () => {
+  const token = JSON.parse(localStorage.getItem("token"));
+  try {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+    const response = await axios.get(BASE_URL + "auth/logout", config);
+    localStorage.removeItem("token");
+    return response.data;
+  } catch (error) {
+    localStorage.removeItem("token");
+    console.log(error);
+  }
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -90,6 +108,24 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
+    });
+
+    builder.addCase(fetchLogout.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(fetchLogout.fulfilled, (state) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+      state.user = [];
+    });
+    builder.addCase(fetchLogout.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.user = [];
     });
   },
 });

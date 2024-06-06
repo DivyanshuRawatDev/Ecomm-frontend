@@ -19,7 +19,9 @@ import {
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FiShoppingCart, FiUser } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchLogout } from "../../redux/slices/userSlice";
+import { toast } from "react-toastify";
 
 const Links = ["Home", "Shop", "About", "Contact"];
 
@@ -44,6 +46,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const buttonSize = useBreakpointValue({ base: "sm", md: "md" });
   const { isSuccess } = useSelector((store) => store.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const token = JSON.parse(localStorage.getItem("token")) || "";
@@ -51,6 +54,14 @@ const Navbar = () => {
       setIsLoggedIn(true);
     }
   }, [isSuccess]);
+
+  const handleLogout = () => {
+    dispatch(fetchLogout()).then((action) => {
+      setIsLoggedIn(false);
+      navigate("/login");
+      toast.success(action?.payload?.message);
+    });
+  };
 
   return (
     <Box bg={useColorModeValue("white", "gray.800")} px={4} shadow="md">
@@ -102,7 +113,7 @@ const Navbar = () => {
                   Profile
                 </MenuItem>
                 <MenuItem onClick={() => navigate("/admin")}>Admin</MenuItem>
-                <MenuItem onClick={() => navigate("/logout")}>Logout</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </MenuList>
             </Menu>
           ) : (
