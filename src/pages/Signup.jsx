@@ -8,12 +8,15 @@ import {
   Stack,
   Heading,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 
 import { useDispatch } from "react-redux";
+import { fetchSignup } from "../redux/slices/userSlice";
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -28,15 +31,19 @@ const Signup = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
     setFormData({
       username: "",
       email: "",
       password: "",
     });
-
-  
+    dispatch(fetchSignup(formData)).then((action) => {
+      if (action.payload?.userData) {
+        navigate("/login");
+        toast.success(action?.payload?.message);
+      }
+    });
   };
 
   return (
@@ -44,7 +51,7 @@ const Signup = () => {
       <Heading as="h2" mb={6} textAlign="center">
         Sign Up
       </Heading>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSignup}>
         <Stack spacing={4}>
           <FormControl>
             <FormLabel htmlFor="username">Username</FormLabel>

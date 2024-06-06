@@ -3,9 +3,21 @@ import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
 
 export const fetchProducts = createAsyncThunk(
-  "products/fetchProducts",
-  async () => {
-    const response = await axios.get(BASE_URL + "product/get");
+  "product/fetchProducts",
+  async (
+    { searchQuery, sort, order, category, currentPage, itemsPerPage },
+    thunkAPI
+  ) => {
+    const response = await axios.get(BASE_URL + "product/get", {
+      params: {
+        searchQuery,
+        sort,
+        order,
+        category,
+        page: currentPage,
+        limit: itemsPerPage,
+      },
+    });
     return response.data;
   }
 );
@@ -36,6 +48,5 @@ const productSlice = createSlice({
     });
   },
 });
-
 
 export default productSlice.reducer;

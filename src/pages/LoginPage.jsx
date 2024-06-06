@@ -34,7 +34,7 @@ const LoginPage = () => {
     dispatch(fetchLogin({ email, password })).then((action) => {
       if (action.payload?.userData) {
         navigate("/");
-        toast.success(user.message)
+        toast.success(action?.payload?.message);
       }
     });
   };

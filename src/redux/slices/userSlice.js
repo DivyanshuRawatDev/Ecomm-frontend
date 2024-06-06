@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL } from "../../utils/constants";
+import axios from "axios";
 
 export const fetchLogin = createAsyncThunk("login", async (credentials) => {
   try {
@@ -32,6 +33,22 @@ export const fetchLogin = createAsyncThunk("login", async (credentials) => {
   }
 });
 
+export const fetchSignup = createAsyncThunk(
+  "auth/signup",
+  async (credentials) => {
+    console.log(credentials, "signup credentials");
+    try {
+      const response = await axios.post(`${BASE_URL}auth/signup`, credentials);
+
+      const data = response.data;
+      return data;
+    } catch (error) {
+      console.error("Signup error:", error);
+      throw error;
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -53,6 +70,23 @@ const userSlice = createSlice({
       state.isSuccess = true;
     });
     builder.addCase(fetchLogin.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+    });
+
+    builder.addCase(fetchSignup.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(fetchSignup.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.user = action.payload;
+      state.isSuccess = true;
+    });
+    builder.addCase(fetchSignup.rejected, (state) => {
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
