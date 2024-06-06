@@ -8,6 +8,8 @@ import Signup from "./pages/Signup";
 import Footer from "./components/footer/Footer";
 import CartPage from "./pages/CartPage";
 import ProtectedRoute from "./utils/ProtectedRoutes";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 function App() {
   return (
     <ChakraProvider>
@@ -18,7 +20,8 @@ function App() {
             <Route path="/" element={<Products />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<Signup />} />
-
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
             <Route
               path="/cart"
               element={

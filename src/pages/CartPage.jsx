@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCartProduct, deleteCartProduct } from "../redux/slices/cartSlice";
+import { toast } from "react-toastify";
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,9 @@ const CartPage = () => {
   };
 
   const handleDeleteCartProduct = (productId) => {
-    dispatch(deleteCartProduct(productId));
+    dispatch(deleteCartProduct(productId)).then((action)=>{
+      toast.success("Product Deleted")
+    });
   };
 
   return (
