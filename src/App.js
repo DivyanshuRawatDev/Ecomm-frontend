@@ -10,6 +10,7 @@ import CartPage from "./pages/CartPage";
 import ProtectedRoute from "./utils/ProtectedRoutes";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Profile from "./pages/Profile";
 function App() {
   return (
     <ChakraProvider>
@@ -30,7 +31,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
+          
         </div>
         <Footer />
       </div>
