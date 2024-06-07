@@ -17,7 +17,7 @@ const Products = () => {
   const [order, setOrder] = useState("asc");
   const [category, setFilterCriteria] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8; // Adjust as needed
+  const itemsPerPage = 8;
 
   useEffect(() => {
     dispatch(
@@ -75,7 +75,6 @@ const Products = () => {
             <option value="Books">Books</option>
             <option value="Home">Home</option>
             <option value="Other">Other</option>
-            
           </select>
         </div>
       </div>
