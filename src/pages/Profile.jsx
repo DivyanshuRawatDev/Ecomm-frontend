@@ -7,15 +7,15 @@ import {
   FormLabel,
   Input,
   Avatar,
-  IconButton,
   useColorModeValue,
-  Tooltip,
   VStack,
   HStack,
-  useToast,
+  IconButton,
+  Tooltip,
 } from "@chakra-ui/react";
-import { EditIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { useSelector } from "react-redux";
+import { EditIcon, CheckIcon } from "@chakra-ui/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfilePic } from "../redux/slices/profileSlice";
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -24,100 +24,28 @@ const Profile = () => {
     address: "123 Main St, Springfield",
     image: "https://via.placeholder.com/150",
   });
+  const dispatch = useDispatch();
+  const { image } = useSelector((store) => {
+    return store?.profile;
+  });
   const [editMode, setEditMode] = useState({
     name: false,
     address: false,
-    image: false,
   });
 
-  const {user} = useSelector((store) => store?.user);
-  console.log(user.userData,"user")
-
-  const toast = useToast();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProfile({
-      ...profile,
-      [name]: value,
-    });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (upload) => {
-        setProfile({
-          ...profile,
-          image: upload.target.result,
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const toggleEditMode = (field) => {
-    setEditMode({
-      ...editMode,
-      [field]: !editMode[field],
-    });
-  };
-
-  const handleSave = async (field) => {
-    try {
-      let response;
-      switch (field) {
-        case "name":
-          response = await updateName(profile.name);
-          break;
-        case "address":
-          response = await updateAddress(profile.address);
-          break;
-        case "image":
-          response = await updateImage(profile.image);
-          break;
-        default:
-          return;
-      }
-      if (response.success) {
-        toggleEditMode(field);
-        toast({
-          title: `${field.charAt(0).toUpperCase() + field.slice(1)} updated.`,
-          description: `Your ${field} has been successfully updated.`,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    } catch (error) {
-      toast({
-        title: `Error updating ${field}.`,
-        description: `An error occurred while updating your ${field}. Please try again.`,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  };
-
-  const updateName = async (name) => {
-    // API call to update name
-    return { success: true };
-  };
-
-  const updateAddress = async (address) => {
-    // API call to update address
-    return { success: true };
-  };
-
-  const updateImage = async (image) => {
-    // API call to update image
-    return { success: true };
-  };
-
-  const openFileDialog = () => {
+  const handleImageClick = () => {
     document.getElementById("imageInput").click();
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e?.target?.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("profilePic", file);
+
+      dispatch(updateProfilePic(formData));
+    }
   };
 
   return (
@@ -143,38 +71,15 @@ const Profile = () => {
           <Box className="relative mb-4">
             <Avatar
               size="2xl"
-              src={profile.image}
+              src={image?.image}
               className="cursor-pointer"
-              onClick={() => toggleEditMode("image")}
+              onClick={handleImageClick}
             />
-            {editMode.image && (
-              <Box className="absolute top-0 right-0">
-                <Tooltip label="Change Image" aria-label="Change Image">
-                  <IconButton
-                    icon={<CheckIcon />}
-                    onClick={openFileDialog}
-                    size="sm"
-                    aria-label="Change Image"
-                    colorScheme="teal"
-                    className="mr-2"
-                  />
-                </Tooltip>
-                <Tooltip label="Cancel" aria-label="Cancel">
-                  <IconButton
-                    icon={<CloseIcon />}
-                    onClick={() => toggleEditMode("image")}
-                    size="sm"
-                    aria-label="Cancel"
-                    colorScheme="red"
-                  />
-                </Tooltip>
-              </Box>
-            )}
             <input
               type="file"
               id="imageInput"
               className="hidden"
-              onChange={handleImageChange}
+              onChange={handleImageUpload}
             />
           </Box>
           <VStack spacing={4} className="w-full">
@@ -192,27 +97,29 @@ const Profile = () => {
                   focusBorderColor="teal.400"
                   _placeholder={{ color: "gray.500" }}
                   value={profile.name}
-                  onChange={handleChange}
                   isReadOnly={!editMode.name}
+                  onChange={(e) =>
+                    setProfile({ ...profile, name: e.target.value })
+                  }
                 />
                 {editMode.name ? (
                   <Tooltip label="Save" aria-label="Save">
                     <IconButton
                       icon={<CheckIcon />}
-                      onClick={() => handleSave("name")}
                       size="sm"
                       aria-label="Save Name"
                       colorScheme="teal"
+                      onClick={() => setEditMode({ ...editMode, name: false })}
                     />
                   </Tooltip>
                 ) : (
                   <Tooltip label="Edit" aria-label="Edit">
                     <IconButton
                       icon={<EditIcon />}
-                      onClick={() => toggleEditMode("name")}
                       size="sm"
                       aria-label="Edit Name"
                       colorScheme="gray"
+                      onClick={() => setEditMode({ ...editMode, name: true })}
                     />
                   </Tooltip>
                 )}
@@ -231,7 +138,7 @@ const Profile = () => {
                 variant="filled"
                 focusBorderColor="teal.400"
                 _placeholder={{ color: "gray.500" }}
-                value={user?.userData?.email}
+                value={profile.email}
                 isReadOnly
               />
             </FormControl>
@@ -249,27 +156,33 @@ const Profile = () => {
                   focusBorderColor="teal.400"
                   _placeholder={{ color: "gray.500" }}
                   value={profile.address}
-                  onChange={handleChange}
                   isReadOnly={!editMode.address}
+                  onChange={(e) =>
+                    setProfile({ ...profile, address: e.target.value })
+                  }
                 />
                 {editMode.address ? (
                   <Tooltip label="Save" aria-label="Save">
                     <IconButton
                       icon={<CheckIcon />}
-                      onClick={() => handleSave("address")}
                       size="sm"
                       aria-label="Save Address"
                       colorScheme="teal"
+                      onClick={() =>
+                        setEditMode({ ...editMode, address: false })
+                      }
                     />
                   </Tooltip>
                 ) : (
                   <Tooltip label="Edit" aria-label="Edit">
                     <IconButton
                       icon={<EditIcon />}
-                      onClick={() => toggleEditMode("address")}
                       size="sm"
                       aria-label="Edit Address"
                       colorScheme="gray"
+                      onClick={() =>
+                        setEditMode({ ...editMode, address: true })
+                      }
                     />
                   </Tooltip>
                 )}
