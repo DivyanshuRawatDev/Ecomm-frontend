@@ -16,23 +16,25 @@ import {
 import { EditIcon, CheckIcon } from "@chakra-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfilePic } from "../redux/slices/profileSlice";
+import { fetchUpdateUsername } from "../redux/slices/userSlice";
 
 const Profile = () => {
-  const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    address: "123 Main St, Springfield",
-    image: "https://via.placeholder.com/150",
-  });
-  const dispatch = useDispatch();
-  const { image } = useSelector((store) => {
-    return store?.profile;
-  });
+  const [username, setUsername] = useState("");
+  const [address, setAddress] = useState("");
   const [editMode, setEditMode] = useState({
     name: false,
     address: false,
   });
 
+  const dispatch = useDispatch();
+
+  const { image } = useSelector((store) => {
+    return store?.profile;
+  });
+  const { user } = useSelector((store) => {
+    return store?.user;
+  });
+  console.log(user);
   const handleImageClick = () => {
     document.getElementById("imageInput").click();
   };
@@ -46,6 +48,11 @@ const Profile = () => {
 
       dispatch(updateProfilePic(formData));
     }
+  };
+
+  const handleSaveUsername = () => {
+    dispatch(fetchUpdateUsername(username));
+    setEditMode({ ...editMode, name: false });
   };
 
   return (
@@ -96,11 +103,9 @@ const Profile = () => {
                   variant="filled"
                   focusBorderColor="teal.400"
                   _placeholder={{ color: "gray.500" }}
-                  value={profile.name}
+                  defaultValue={user?.username}
                   isReadOnly={!editMode.name}
-                  onChange={(e) =>
-                    setProfile({ ...profile, name: e.target.value })
-                  }
+                  onChange={(e) => setUsername(e.target.value)}
                 />
                 {editMode.name ? (
                   <Tooltip label="Save" aria-label="Save">
@@ -109,7 +114,7 @@ const Profile = () => {
                       size="sm"
                       aria-label="Save Name"
                       colorScheme="teal"
-                      onClick={() => setEditMode({ ...editMode, name: false })}
+                      onClick={handleSaveUsername}
                     />
                   </Tooltip>
                 ) : (
@@ -138,7 +143,7 @@ const Profile = () => {
                 variant="filled"
                 focusBorderColor="teal.400"
                 _placeholder={{ color: "gray.500" }}
-                value={profile.email}
+                value={user?.email}
                 isReadOnly
               />
             </FormControl>
@@ -155,11 +160,9 @@ const Profile = () => {
                   variant="filled"
                   focusBorderColor="teal.400"
                   _placeholder={{ color: "gray.500" }}
-                  value={profile.address}
-                  isReadOnly={!editMode.address}
-                  onChange={(e) =>
-                    setProfile({ ...profile, address: e.target.value })
-                  }
+                  value={address}
+                  isReadOnly={user?.address}
+                  onChange={(e) => setAddress(e.target.value)}
                 />
                 {editMode.address ? (
                   <Tooltip label="Save" aria-label="Save">

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL } from "../../utils/constants";
 import axios from "axios";
+import { act } from "react";
 
 export const fetchLogin = createAsyncThunk("login", async (credentials) => {
   try {
@@ -67,10 +68,36 @@ export const fetchLogout = createAsyncThunk("auth/logout", async () => {
   }
 });
 
+export const fetchUpdateUsername = createAsyncThunk(
+  "auth/username",
+  async (username) => {
+    const token = JSON.parse(localStorage.getItem("token"));
+    console.log(username, "username hai bs");
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axios.put(
+        BASE_URL + "profile/name",
+        { username },
+        config
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    user: [],
+    token: null,
+    user: {},
+    message: "",
     isLoading: false,
     isError: false,
     isSuccess: false,
@@ -84,7 +111,9 @@ const userSlice = createSlice({
     builder.addCase(fetchLogin.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isError = false;
-      state.user = action.payload;
+      state.user = action.payload.userData;
+      state.token = action.payload.token;
+      state.message = action.payload.message;
       state.isSuccess = true;
     });
     builder.addCase(fetchLogin.rejected, (state) => {
@@ -101,7 +130,8 @@ const userSlice = createSlice({
     builder.addCase(fetchSignup.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isError = false;
-      state.user = action.payload;
+      state.user = action.payload.userData;
+      state.message = action.payload.message;
       state.isSuccess = true;
     });
     builder.addCase(fetchSignup.rejected, (state) => {
@@ -126,6 +156,24 @@ const userSlice = createSlice({
       state.isError = true;
       state.isSuccess = false;
       state.user = [];
+    });
+
+    builder.addCase(fetchUpdateUsername.pending, (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.isSuccess = false;
+    });
+    builder.addCase(fetchUpdateUsername.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.isSuccess = true;
+      state.user = action.payload.userData;
+      state.message = action.payload.message;
+    });
+    builder.addCase(fetchUpdateUsername.rejected, (state) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
     });
   },
 });
